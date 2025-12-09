@@ -1,9 +1,20 @@
+// next.config.ts
+import type { NextConfig } from "next";
 import withPWA from "next-pwa";
 
-const nextConfig = {
+const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["YOUR-SUPABASE-DOMAIN"], // optional
+    // Use remotePatterns (recommended in Next 16)
+    remotePatterns: [
+      {
+        protocol: "https",
+        // 👇 REPLACE this with *your* Supabase project domain
+        // e.g. "uncrflinmfbkngscfnkw.supabase.co"
+        hostname: "uncrflinmfbkngscfnkw.supabase.co",
+        pathname: "/storage/v1/object/public/**",
+      },
+    ],
   },
 };
 
