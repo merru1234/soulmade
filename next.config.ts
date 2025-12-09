@@ -15,7 +15,7 @@ const baseConfig: NextConfig = {
         // your image URL:
         // /storage/v1/object/public/product-images/public/<file>.png
         // so we allow the whole bucket:
-        pathname: "/storage/v1/object/public/product-images/**",
+        pathname: "/storage/v1/object/public/product-images/public/**",
       },
     ],
   },
