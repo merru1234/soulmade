@@ -1,65 +1,112 @@
+// app/page.tsx  (HOME PAGE)
+
 import Image from "next/image";
+import Link from "next/link";
+import { Settings } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="min-h-screen bg-[#f3f6fb] text-[#071428]">
+      {/* Header */}
+      <header className="max-w-6xl mx-auto px-4 py-6 flex items-center justify-between">
+        {/* Logo + brand */}
+        <Link href="/" className="flex items-center gap-3">
+          <Image src="/SoulMade.png" alt="SoulMade logo" width={45} height={45} />
+          <h1 className="text-2xl font-semibold tracking-tight text-[#16377A]">
+            SoulMade
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+        </Link>
+
+        <div className="flex items-center gap-2">
+          {/* Settings (for accessibility, screen reader, etc.) */}
+          <Link
+            href="/settings"
+            className="hidden sm:inline-flex items-center gap-1 rounded-full border border-[#c8cee4] px-3 py-2 text-xs font-medium text-[#16377A] hover:bg-[#e5ecff] transition-colors"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <Settings size={16} />
+            <span>Settings</span>
+          </Link>
+
+          <Link
+            href="/auth/login"
+            className="px-4 py-2 rounded-full border border-[#123b8c] text-[#123b8c] text-sm font-medium hover:bg-[#123b8c] hover:text-white transition-colors"
           >
-            Documentation
-          </a>
+            Log in
+          </Link>
+          <Link
+            href="/auth/signup"
+            className="px-4 py-2 rounded-full bg-[#c12a63] text-white text-sm font-medium hover:bg-[#a91f54] transition-colors"
+          >
+            Sign up
+          </Link>
         </div>
-      </main>
+      </header>
+
+      {/* Hero */}
+      <section className="max-w-6xl mx-auto px-4 py-4">
+        <h2 className="text-3xl md:text-4xl font-bold mb-3 leading-tight">
+          A marketplace built around differently-abled creators.
+        </h2>
+        <p className="text-[#55627a] max-w-2xl text-sm md:text-base">
+          Discover handmade products, learn from real creators, and explore inclusive job
+          opportunities — all inside one simple platform.
+        </p>
+      </section>
+
+      {/* Feature Cards */}
+      <section className="max-w-6xl mx-auto px-4 py-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Marketplace */}
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-[#e3e7f2] flex flex-col justify-between">
+          <div>
+            <h3 className="font-semibold text-lg">Marketplace</h3>
+            <p className="text-sm text-[#55627a] mt-1">
+              Browse products crafted by differently-abled creators and buy from them directly.
+            </p>
+          </div>
+          <Link
+            href="/marketplace"
+            className="text-[#123b8c] text-sm font-medium mt-3 inline-block"
+          >
+            View products →
+          </Link>
+        </div>
+
+        {/* Creator Space */}
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-[#e3e7f2] flex flex-col justify-between">
+          <div>
+            <h3 className="font-semibold text-lg">Creator space</h3>
+            <p className="text-sm text-[#55627a] mt-1">
+              Creator-led tutorials, skills, and knowledge sharing — coming soon.
+            </p>
+          </div>
+          <span className="text-[#c12a63] text-sm font-medium mt-3 inline-block">
+            Coming soon →
+          </span>
+        </div>
+
+        {/* Job Board */}
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-[#e3e7f2] flex flex-col justify-between">
+          <div>
+            <h3 className="font-semibold text-lg">Job Board</h3>
+            <p className="text-sm text-[#55627a] mt-1">
+              Curated job and gig opportunities that welcome differently-abled talent.
+            </p>
+          </div>
+          <span className="text-[#c12a63] text-sm font-medium mt-3 inline-block">
+            Coming soon →
+          </span>
+        </div>
+      </section>
+
+      {/* View all products */}
+      <section className="max-w-6xl mx-auto px-4 pb-24">
+        <Link
+          href="/marketplace"
+          className="text-[#123b8c] text-sm font-medium hover:underline"
+        >
+          View all products →
+        </Link>
+      </section>
     </div>
   );
 }
