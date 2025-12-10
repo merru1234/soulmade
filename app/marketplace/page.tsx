@@ -14,7 +14,7 @@ type Product = {
   image_url: string | null;
 };
 
-// 🔹 5 dummy products – images served from /public
+// 🔹 Dummy products that use images from /public/dummy-products
 const DUMMY_PRODUCTS: Product[] = [
   {
     id: 1,
@@ -173,8 +173,8 @@ export default function MarketplacePage() {
                     src={product.image_url}
                     alt={product.name}
                     fill
-                    className="object-cover"
                     sizes="(min-width: 768px) 160px, 100vw"
+                    className="object-cover"
                   />
                 </div>
               )}
