@@ -1,5 +1,3 @@
-// app/page.tsx  (HOME PAGE)
-
 import Image from "next/image";
 import Link from "next/link";
 import { Settings } from "lucide-react";
@@ -9,33 +7,34 @@ export default function Home() {
     <div className="min-h-screen bg-[#f3f6fb] text-[#071428]">
       {/* Header */}
       <header className="max-w-6xl mx-auto px-4 py-6 flex items-center justify-between">
-        {/* Logo + brand */}
-        <Link href="/" className="flex items-center gap-3">
-          <Image src="/SoulMade.png" alt="SoulMade logo" width={45} height={45} />
-          <h1 className="text-2xl font-semibold tracking-tight text-[#16377A]">
-            SoulMade
-          </h1>
-        </Link>
+        <div className="flex items-center gap-3">
+          <Image src="/SoulMade.png" alt="Logo" width={45} height={45} />
+          <h1 className="text-2xl font-semibold tracking-tight">SoulMade</h1>
+        </div>
 
         <div className="flex items-center gap-2">
-          {/* Settings (for accessibility, screen reader, etc.) */}
+          {/* Settings – visible on mobile too */}
           <Link
             href="/settings"
-            className="hidden sm:inline-flex items-center gap-1 rounded-full border border-[#c8cee4] px-3 py-2 text-xs font-medium text-[#16377A] hover:bg-[#e5ecff] transition-colors"
+            className="
+              inline-flex items-center gap-1 rounded-full border border-[#d1d7ea]
+              px-3 py-1.5 text-xs md:text-sm text-[#123b8c] bg-white
+              hover:bg-[#e7ecff] hover:border-[#123b8c] transition-colors
+            "
           >
-            <Settings size={16} />
-            <span>Settings</span>
+            <Settings size={16} className="shrink-0" />
+            <span className="hidden sm:inline">Settings</span>
           </Link>
 
           <Link
             href="/auth/login"
-            className="px-4 py-2 rounded-full border border-[#123b8c] text-[#123b8c] text-sm font-medium hover:bg-[#123b8c] hover:text-white transition-colors"
+            className="px-4 py-2 rounded-full border border-[#123b8c] text-[#123b8c] text-sm hover:bg-[#123b8c] hover:text-white"
           >
             Log in
           </Link>
           <Link
             href="/auth/signup"
-            className="px-4 py-2 rounded-full bg-[#c12a63] text-white text-sm font-medium hover:bg-[#a91f54] transition-colors"
+            className="px-4 py-2 rounded-full bg-[#c12a63] text-white text-sm hover:bg-[#a91f54]"
           >
             Sign up
           </Link>
