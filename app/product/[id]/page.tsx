@@ -7,13 +7,13 @@ type Product = {
   id: number;
   name: string;
   price: number;
-  description: string | null;
-  seller_contact: string | null;
-  category: string | null;
-  image_url: string | null;
+  description: string;
+  seller_contact: string;
+  category: string;
+  image_url: string; // not nullable here – our dummy data always has one
 };
 
-// Same dummy products as marketplace (using /public images)
+// 🔹 SAME 5 DUMMY PRODUCTS AS MARKETPLACE
 const DUMMY_PRODUCTS: Product[] = [
   {
     id: 1,
@@ -23,7 +23,7 @@ const DUMMY_PRODUCTS: Product[] = [
       "Hand-painted clay earrings with vibrant colours. Lightweight and perfect for daily wear.",
     seller_contact: "https://wa.me/919999000001",
     category: "Jewelry & Personal Accessories",
-    image_url: "/clay1.jpg",
+    image_url: "/dummy-products/clay1.jpg",
   },
   {
     id: 2,
@@ -33,7 +33,7 @@ const DUMMY_PRODUCTS: Product[] = [
       "A5 notebook with dotted pages and a hand-drawn cover illustration.",
     seller_contact: "https://wa.me/919999000002",
     category: "Art & Stationery",
-    image_url: "/notebook.jpg",
+    image_url: "/dummy-products/notebook.jpg",
   },
   {
     id: 3,
@@ -43,17 +43,17 @@ const DUMMY_PRODUCTS: Product[] = [
       "Slow-burning soy candle with a soft vanilla scent, poured in a reusable jar.",
     seller_contact: "https://wa.me/919999000003",
     category: "Handicrafts & Home Decor",
-    image_url: "/candle.jpg",
+    image_url: "/dummy-products/candle.jpg",
   },
   {
     id: 4,
     name: "Speckled ceramic mug",
     price: 599,
     description:
-      "Wheel-thrown ceramic mug with speckled glaze and a comfy handle.",
+      "Wheel-thrown ceramic mug with a speckled glaze and a comfy handle.",
     seller_contact: "https://wa.me/919999000004",
     category: "Essentials & Daily Products",
-    image_url: "/mug.jpg",
+    image_url: "/dummy-products/mug.jpg",
   },
   {
     id: 5,
@@ -63,181 +63,165 @@ const DUMMY_PRODUCTS: Product[] = [
       "Zip pouch with colourful hand embroidery. Great for coins, keys, or earbuds.",
     seller_contact: "https://wa.me/919999000005",
     category: "Textile & Fabric Products",
-    image_url: "/pouch.jpg",
+    image_url: "/dummy-products/pouch.jpg",
   },
 ];
 
-// 🔴 IMPORTANT: no "use client" at the top of this file
-
-// Next 16 style: params is a Promise
-interface ProductPageProps {
-  params: Promise<{ id: string }>;
+function getProductById(id: number): Product | null {
+  return DUMMY_PRODUCTS.find((p) => p.id === id) ?? null;
 }
 
-export default async function ProductPage({ params }: ProductPageProps) {
-  // Unwrap the params Promise
-  const { id } = await params;
+export default function ProductPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const numericId = Number(params.id);
+  const product =
+    Number.isFinite(numericId) && numericId > 0
+      ? getProductById(numericId)
+      : null;
 
-  const numericId = Number(id);
-
-  if (!Number.isFinite(numericId)) {
-    return (
-      <NotFoundCard message="That product link looks a bit strange." />
-    );
-  }
-
-  const product = DUMMY_PRODUCTS.find((p) => p.id === numericId);
-
+  // ❌ If ID is invalid or not in our dummy list
   if (!product) {
     return (
-      <NotFoundCard message="We couldn’t find that product. It may have been removed." />
-    );
-  }
-
-  return (
-    <div className="min-h-screen bg-[#f3f6fb] text-[#071428]">
-      <div className="mx-auto max-w-4xl px-4 py-6 md:py-10">
-        {/* Top bar */}
-        <header className="mb-6 flex items-center justify-between gap-4">
-          {/* Brand (link to home) */}
+      <div className="min-h-screen bg-[#f3f6fb] text-[#071428] flex flex-col">
+        <header className="max-w-5xl mx-auto px-4 pt-6 pb-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <div className="relative h-9 w-9">
               <Image
                 src="/SoulMade.png"
                 alt="SoulMade logo"
                 fill
-                className="object-contain drop-shadow-sm"
+                className="object-contain"
               />
             </div>
-            <span className="text-lg font-semibold tracking-tight text-[#16377A]">
+            <span className="text-lg font-semibold text-[#16377A]">
               SoulMade
             </span>
           </Link>
-
-          <Link
-            href="/marketplace"
-            className="text-xs md:text-sm text-[#123b8c] hover:underline underline-offset-4"
-          >
-            ← Back to marketplace
-          </Link>
         </header>
 
-        {/* Product card */}
-        <main className="rounded-3xl bg-white shadow-sm border border-[#e3e7f2] p-4 md:p-6">
-          <div className="grid gap-6 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
-            {/* Image / visual */}
-            <section className="space-y-3">
-              <div className="relative w-full overflow-hidden rounded-2xl bg-[#eef1fb] border border-[#e0e4f4]">
-                <div className="relative h-56 w-full md:h-72">
-                  {product.image_url ? (
-                    <Image
-                      src={product.image_url}
-                      alt={product.name}
-                      fill
-                      className="object-cover"
-                      sizes="(min-width: 768px) 320px, 100vw"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-[#9aa3c3] text-sm">
-                      <span>Image coming soon</span>
-                      <span className="text-xs">
-                        The creator hasn&apos;t added a photo yet.
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {product.category && (
-                <span className="inline-flex items-center px-3 py-1 rounded-full bg-[#fde7f1] text-[11px] font-medium text-[#c12a63]">
-                  {product.category}
-                </span>
-              )}
-            </section>
-
-            {/* Details + actions */}
-            <section className="flex flex-col justify-between gap-5">
-              <div className="space-y-3">
-                <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-[#071428]">
-                  {product.name}
-                </h1>
-
-                <p className="text-lg md:text-xl font-semibold text-[#123b8c]">
-                  ₹{product.price}
-                </p>
-
-                <p className="text-sm leading-relaxed text-[#4f5d7a]">
-                  {product.description ??
-                    "This creator hasn’t written their full story yet, but your order still means a lot to them."}
-                </p>
-              </div>
-
-              <div className="space-y-3 rounded-2xl border border-[#e3e7f2] bg-[#f8f9ff] p-4">
-                <h2 className="text-sm font-medium text-[#071428]">
-                  Ready to place an order?
-                </h2>
-                <p className="text-xs text-[#5f6b8a]">
-                  This is just a prototype, so the buttons below don&apos;t
-                  complete payment yet — but they show how the experience will feel.
-                </p>
-
-                <div className="flex flex-wrap gap-3 pt-1">
-                  {/* Buy now */}
-                  <button
-                    type="button"
-                    className="inline-flex items-center justify-center rounded-full bg-[#c12a63] px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-[#a91f54] transition-colors"
-                  >
-                    Buy now
-                  </button>
-
-                  {/* Add to cart */}
-                  <button
-                    type="button"
-                    className="inline-flex items-center justify-center rounded-full border border-[#c8cee4] px-4 py-2 text-sm text-[#123b8c] hover:bg-[#e5ecff] transition-colors"
-                  >
-                    Add to cart
-                  </button>
-
-                  {/* Optional: contact creator */}
-                  {product.seller_contact && (
-                    <a
-                      href={product.seller_contact}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center justify-center rounded-full border border-[#e3e7f2] px-4 py-2 text-xs text-[#5f6b8a] hover:bg-[#f2f4ff] transition-colors"
-                    >
-                      Contact creator (prototype)
-                    </a>
-                  )}
-                </div>
-
-                <p className="text-[11px] text-[#9aa3c3]">
-                  SoulMade · Product #{product.id}
-                </p>
-              </div>
-            </section>
+        <main className="flex-1 flex items-center justify-center px-4 pb-24">
+          <div className="max-w-md w-full bg-white rounded-2xl shadow-sm border border-[#e3e7f2] px-6 py-8 text-center">
+            <h1 className="text-lg font-semibold mb-1">
+              Product not available
+            </h1>
+            <p className="text-sm text-[#5f6b8a] mb-4">
+              That product link looks a bit strange. It may have been removed or
+              doesn&apos;t exist in this prototype.
+            </p>
+            <Link
+              href="/marketplace"
+              className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-[#123b8c] text-white text-sm font-medium hover:bg-[#0f2f70] transition-colors"
+            >
+              Back to marketplace
+            </Link>
           </div>
         </main>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
-function NotFoundCard({ message }: { message: string }) {
+  // ✅ Valid product – show full detail view
   return (
-    <div className="min-h-screen bg-[#f3f6fb] flex items-center justify-center px-4">
-      <div className="w-full max-w-md rounded-3xl bg-white shadow-sm border border-[#e3e7f2] p-6 text-center">
-        <p className="mb-2 text-sm font-medium text-[#071428]">
-          Product not available
-        </p>
-        <p className="mb-5 text-xs text-[#5f6b8a]">{message}</p>
+    <div className="min-h-screen bg-[#f3f6fb] text-[#071428]">
+      {/* Header */}
+      <header className="max-w-5xl mx-auto px-4 pt-6 pb-4 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-2">
+          <div className="relative h-9 w-9">
+            <Image
+              src="/SoulMade.png"
+              alt="SoulMade logo"
+              fill
+              className="object-contain"
+            />
+          </div>
+          <span className="text-lg font-semibold text-[#16377A]">
+            SoulMade
+          </span>
+        </Link>
+
         <Link
           href="/marketplace"
-          className="inline-flex items-center justify-center rounded-full bg-[#16377A] px-4 py-2 text-sm font-medium text-white hover:bg-[#123b8c] transition-colors"
+          className="text-xs md:text-sm text-[#123b8c] hover:underline underline-offset-4"
         >
-          Back to marketplace
+          ← Back to marketplace
         </Link>
-      </div>
+      </header>
+
+      {/* Content */}
+      <main className="max-w-5xl mx-auto px-4 pb-24">
+        <section className="bg-white rounded-3xl shadow-sm border border-[#e3e7f2] p-4 md:p-6 flex flex-col md:flex-row gap-6">
+          {/* Image */}
+          <div className="md:w-5/12">
+            <div className="relative w-full h-64 md:h-72 rounded-2xl overflow-hidden bg-[#eef1fb]">
+              <Image
+                src={product.image_url}
+                alt={product.name}
+                fill
+                className="object-cover"
+              />
+            </div>
+
+            <div className="mt-3 inline-flex items-center px-3 py-1 rounded-full bg-[#fde7f1] text-[11px] font-medium text-[#c12a63]">
+              {product.category}
+            </div>
+          </div>
+
+          {/* Details */}
+          <div className="md:w-7/12 flex flex-col justify-between gap-4">
+            <div>
+              <h1 className="text-xl md:text-2xl font-semibold mb-1">
+                {product.name}
+              </h1>
+              <p className="text-lg md:text-xl font-semibold text-[#123b8c] mb-3">
+                ₹{product.price}
+              </p>
+              <p className="text-sm md:text-base text-[#5f6b8a] leading-relaxed">
+                {product.description}
+              </p>
+            </div>
+
+            <div className="mt-4 p-4 rounded-2xl bg-[#f7f4ff] border border-[#e0dafb]">
+              <h2 className="text-sm font-semibold mb-1">
+                Ready to place an order?
+              </h2>
+              <p className="text-xs text-[#5f6b8a] mb-3">
+                This is just a prototype – the buttons below don&apos;t complete
+                payment yet, but they show how the experience will feel.
+              </p>
+
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  className="px-4 py-2 rounded-full bg-[#c12a63] text-white text-sm font-medium hover:bg-[#a91f54] transition-colors"
+                >
+                  Buy now
+                </button>
+                <button
+                  type="button"
+                  className="px-4 py-2 rounded-full bg-white text-[#123b8c] border border-[#123b8c] text-sm font-medium hover:bg-[#123b8c] hover:text-white transition-colors"
+                >
+                  Add to cart
+                </button>
+                <a
+                  href={product.seller_contact}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-4 py-2 rounded-full bg-white text-[#5f6b8a] border border-[#d4d9e6] text-xs font-medium hover:border-[#123b8c] transition-colors"
+                >
+                  Contact creator (prototype)
+                </a>
+              </div>
+            </div>
+
+            <p className="text-[11px] text-[#9aa3c3]">
+              SoulMade · Product #{product.id}
+            </p>
+          </div>
+        </section>
+      </main>
     </div>
   );
 }

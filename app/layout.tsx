@@ -19,6 +19,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <link rel="manifest" href="/manifest.webmanifest" />
+
       <body className="min-h-screen bg-[#f3f6fb] text-[#071428] antialiased">
   <div className="min-h-screen pb-24 bg-[#f3f6fb]">
     {children}

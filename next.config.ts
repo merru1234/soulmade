@@ -21,3 +21,20 @@ export default withPWA({
   skipWaiting: true,
   disable: !isProd, // PWA only in production
 })(nextConfig);
+// next.config.ts
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  reactStrictMode: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "uncrflinmfbkngscfnkw.supabase.co",
+        pathname: "/storage/v1/object/public/product-images/**",
+      },
+    ],
+  },
+};
+
+export default nextConfig;
