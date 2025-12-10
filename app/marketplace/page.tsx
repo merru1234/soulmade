@@ -1,31 +1,27 @@
 "use client";
 
-import Image from "next/image";
+import React from "react";
 import Link from "next/link";
-import { useState } from "react";
+import Image from "next/image";
 
-/** Product type just for UI */
 type Product = {
   id: number;
   name: string;
   price: number;
   description: string;
-  seller_contact: string;
   category: string;
-  image_url: string; // path under /public
+  image: string; // path inside /public
 };
 
-/** 5 hard-coded products using /public/dummy-products images */
-const DUMMY_PRODUCTS: Product[] = [
+const PRODUCTS: Product[] = [
   {
     id: 1,
     name: "Bright clay earrings",
     price: 799,
     description:
       "Hand-painted clay earrings in bright colours. Lightweight and perfect for daily wear.",
-    seller_contact: "https://wa.me/919999000001",
     category: "Jewelry & Personal Accessories",
-    image_url: "/dummy-products/clay1.jpg",
+    image: "/dummy-products/clay1.jpg",
   },
   {
     id: 2,
@@ -33,9 +29,8 @@ const DUMMY_PRODUCTS: Product[] = [
     price: 249,
     description:
       "A5 notebook with dotted pages and a hand-drawn cover illustration.",
-    seller_contact: "https://wa.me/919999000002",
     category: "Art & Stationery",
-    image_url: "/dummy-products/notebook.jpg",
+    image: "/dummy-products/notebook.jpg",
   },
   {
     id: 3,
@@ -43,9 +38,8 @@ const DUMMY_PRODUCTS: Product[] = [
     price: 499,
     description:
       "Slow-burning soy candle with a soft vanilla scent, poured in a reusable jar.",
-    seller_contact: "https://wa.me/919999000003",
     category: "Handicrafts & Home Decor",
-    image_url: "/dummy-products/candle.jpg",
+    image: "/dummy-products/candle.jpg",
   },
   {
     id: 4,
@@ -53,9 +47,8 @@ const DUMMY_PRODUCTS: Product[] = [
     price: 599,
     description:
       "Wheel-thrown ceramic mug with speckled glaze and a comfy handle.",
-    seller_contact: "https://wa.me/919999000004",
     category: "Essentials & Daily Products",
-    image_url: "/dummy-products/mug.jpg",
+    image: "/dummy-products/mug.jpg",
   },
   {
     id: 5,
@@ -63,14 +56,13 @@ const DUMMY_PRODUCTS: Product[] = [
     price: 349,
     description:
       "Zip pouch with colourful hand embroidery. Great for coins, keys, or earbuds.",
-    seller_contact: "https://wa.me/919999000005",
     category: "Textile & Fabric Products",
-    image_url: "/dummy-products/pouch.jpg",
+    image: "/dummy-products/pouch.jpg",
   },
 ];
 
 const CATEGORIES = [
-  "All",
+  "All products",
   "Handicrafts & Home Decor",
   "Essentials & Daily Products",
   "Furnitures and Utility",
@@ -83,22 +75,8 @@ const CATEGORIES = [
 ];
 
 export default function MarketplacePage() {
-  const [selectedCategory, setSelectedCategory] = useState<string>("All");
-
-  // ✅ Always use only the dummy products
-  const products: Product[] = DUMMY_PRODUCTS;
-
-  const visibleProducts =
-    selectedCategory === "All"
-      ? products
-      : products.filter(
-          (p) =>
-            p.category &&
-            p.category.toLowerCase() === selectedCategory.toLowerCase()
-        );
-
   return (
-    <div className="min-h-screen bg-[#f3f6fb] text-[#071428] pb-24">
+    <div className="min-h-screen bg-[#f3f6fb] text-[#071428]">
       {/* HEADER */}
       <header className="max-w-5xl mx-auto px-4 pt-6 pb-4 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
@@ -133,50 +111,39 @@ export default function MarketplacePage() {
         </div>
       </header>
 
-      {/* CATEGORY CHIPS */}
+      {/* CATEGORY CHIPS – purely visual, no filtering */}
       <section className="max-w-5xl mx-auto px-4 pb-4 flex flex-wrap gap-2">
-        {CATEGORIES.map((cat) => {
-          const isActive = selectedCategory === cat;
+        {CATEGORIES.map((cat, idx) => {
+          const isActive = idx === 0; // only "All products" highlighted
           return (
             <button
               key={cat}
-              onClick={() => setSelectedCategory(cat)}
+              type="button"
               className={
                 "px-4 py-1.5 rounded-full text-xs md:text-sm border transition-colors " +
                 (isActive
                   ? "bg-[#123b8c] text-white border-[#123b8c] shadow-sm"
-                  : "bg-white text-[#4b5774] border-[#d4d9e6] hover:border-[#123b8c]/50")
+                  : "bg-white text-[#4b5774] border-[#d4d9e6]")
               }
             >
-              {cat === "All" ? "All products" : cat}
+              {cat}
             </button>
           );
         })}
       </section>
 
-      {/* PRODUCT LIST */}
-      <main className="max-w-5xl mx-auto px-4 space-y-3">
-        {visibleProducts.length === 0 && (
-          <p className="text-sm text-[#7d88a8]">
-            No products in this category yet. Check back soon!
-          </p>
-        )}
-
-        {visibleProducts.map((product) => (
-          <Link
-            key={product.id}
-            href={`/product/${product.id}`}
-            className="block"
-          >
+      {/* PRODUCT LIST – ALWAYS renders all 5 */}
+      <main className="max-w-5xl mx-auto px-4 pb-10 space-y-3">
+        {PRODUCTS.map((product) => (
+          <Link key={product.id} href={`/product/${product.id}`} className="block">
             <article className="bg-white rounded-2xl shadow-sm border border-[#e3e7f2] hover:shadow-md hover:border-[#c12a63]/30 transition flex flex-col md:flex-row gap-4 p-4">
-              {/* Product image from /public (safe for Next/Image) */}
               <div className="relative w-full md:w-40 h-40 md:h-32 rounded-xl overflow-hidden bg-[#eef1fb]">
                 <Image
-                  src={product.image_url}
+                  src={product.image}
                   alt={product.name}
                   fill
+                  sizes="160px"
                   className="object-cover"
-                  sizes="(min-width: 768px) 160px, 100vw"
                 />
               </div>
 
@@ -195,9 +162,7 @@ export default function MarketplacePage() {
                     {product.category}
                   </span>
 
-                  <p className="text-sm text-[#5f6b8a] line-clamp-2">
-                    {product.description}
-                  </p>
+                  <p className="text-sm text-[#5f6b8a]">{product.description}</p>
                 </div>
 
                 <p className="mt-2 text-xs text-[#9aa3c3]">
