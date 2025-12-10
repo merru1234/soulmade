@@ -1,6 +1,7 @@
-import Link from "next/link";
+// app/product/[id]/page.tsx
+
 import Image from "next/image";
-import { supabase } from "@/lib/supabaseClient";
+import Link from "next/link";
 
 type Product = {
   id: number;
@@ -10,8 +11,63 @@ type Product = {
   seller_contact: string | null;
   category: string | null;
   image_url: string | null;
-  status?: string | null;
 };
+
+// Same dummy products as marketplace (using /public images)
+const DUMMY_PRODUCTS: Product[] = [
+  {
+    id: 1,
+    name: "Bright clay earrings",
+    price: 799,
+    description:
+      "Hand-painted clay earrings with vibrant colours. Lightweight and perfect for daily wear.",
+    seller_contact: "https://wa.me/919999000001",
+    category: "Jewelry & Personal Accessories",
+    image_url: "/clay1.jpg",
+  },
+  {
+    id: 2,
+    name: "Soft-cover doodle notebook",
+    price: 249,
+    description:
+      "A5 notebook with dotted pages and a hand-drawn cover illustration.",
+    seller_contact: "https://wa.me/919999000002",
+    category: "Art & Stationery",
+    image_url: "/notebook.jpg",
+  },
+  {
+    id: 3,
+    name: "Vanilla soy candle",
+    price: 499,
+    description:
+      "Slow-burning soy candle with a soft vanilla scent, poured in a reusable jar.",
+    seller_contact: "https://wa.me/919999000003",
+    category: "Handicrafts & Home Decor",
+    image_url: "/candle.jpg",
+  },
+  {
+    id: 4,
+    name: "Speckled ceramic mug",
+    price: 599,
+    description:
+      "Wheel-thrown ceramic mug with speckled glaze and a comfy handle.",
+    seller_contact: "https://wa.me/919999000004",
+    category: "Essentials & Daily Products",
+    image_url: "/mug.jpg",
+  },
+  {
+    id: 5,
+    name: "Mini embroidered pouch",
+    price: 349,
+    description:
+      "Zip pouch with colourful hand embroidery. Great for coins, keys, or earbuds.",
+    seller_contact: "https://wa.me/919999000005",
+    category: "Textile & Fabric Products",
+    image_url: "/pouch.jpg",
+  },
+];
+
+// 🔴 IMPORTANT: no "use client" at the top of this file
 
 // Next 16 style: params is a Promise
 interface ProductPageProps {
@@ -19,10 +75,9 @@ interface ProductPageProps {
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-  // 1) Unwrap route params
+  // Unwrap the params Promise
   const { id } = await params;
 
-  // 2) Parse id
   const numericId = Number(id);
 
   if (!Number.isFinite(numericId)) {
@@ -31,29 +86,20 @@ export default async function ProductPage({ params }: ProductPageProps) {
     );
   }
 
-  // 3) Fetch product from Supabase
-  const { data, error } = await supabase
-    .from("products")
-    .select("*")
-    .eq("id", numericId)
-    .single();
+  const product = DUMMY_PRODUCTS.find((p) => p.id === numericId);
 
-  const product = data as Product | null;
-
-  // 4) Missing / not approved → treat as unavailable
-  if (error || !product || (product.status && product.status !== "approved")) {
+  if (!product) {
     return (
-      <UnavailableCard message="This product isn’t available right now. It may have been removed or is awaiting review." />
+      <NotFoundCard message="We couldn’t find that product. It may have been removed." />
     );
   }
 
-  // 5) Happy path – show product
   return (
     <div className="min-h-screen bg-[#f3f6fb] text-[#071428]">
       <div className="mx-auto max-w-4xl px-4 py-6 md:py-10">
         {/* Top bar */}
         <header className="mb-6 flex items-center justify-between gap-4">
-          {/* Brand (home link) */}
+          {/* Brand (link to home) */}
           <Link href="/" className="flex items-center gap-2">
             <div className="relative h-9 w-9">
               <Image
@@ -72,7 +118,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             href="/marketplace"
             className="text-xs md:text-sm text-[#123b8c] hover:underline underline-offset-4"
           >
-            ← Back to products
+            ← Back to marketplace
           </Link>
         </header>
 
@@ -122,47 +168,47 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
                 <p className="text-sm leading-relaxed text-[#4f5d7a]">
                   {product.description ??
-                    "The creator hasn’t added a full description yet, but this product is available to order."}
+                    "This creator hasn’t written their full story yet, but your order still means a lot to them."}
                 </p>
               </div>
 
               <div className="space-y-3 rounded-2xl border border-[#e3e7f2] bg-[#f8f9ff] p-4">
                 <h2 className="text-sm font-medium text-[#071428]">
-                  How would you like to continue?
+                  Ready to place an order?
                 </h2>
                 <p className="text-xs text-[#5f6b8a]">
-                  Add this item to your cart to decide later, or use{" "}
-                  <span className="font-medium">Buy now</span> to contact the
-                  creator directly and place your order.
+                  This is just a prototype, so the buttons below don&apos;t
+                  complete payment yet — but they show how the experience will feel.
                 </p>
 
                 <div className="flex flex-wrap gap-3 pt-1">
-                  {/* Add to cart – links to cart page for now */}
-                  <Link
-                    href="/cart"
+                  {/* Buy now */}
+                  <button
+                    type="button"
                     className="inline-flex items-center justify-center rounded-full bg-[#c12a63] px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-[#a91f54] transition-colors"
                   >
-                    Add to cart
-                  </Link>
+                    Buy now
+                  </button>
 
-                  {/* Buy now – opens WhatsApp / email link */}
+                  {/* Add to cart */}
+                  <button
+                    type="button"
+                    className="inline-flex items-center justify-center rounded-full border border-[#c8cee4] px-4 py-2 text-sm text-[#123b8c] hover:bg-[#e5ecff] transition-colors"
+                  >
+                    Add to cart
+                  </button>
+
+                  {/* Optional: contact creator */}
                   {product.seller_contact && (
                     <a
                       href={product.seller_contact}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center justify-center rounded-full border border-[#123b8c] px-4 py-2 text-sm font-medium text-[#123b8c] hover:bg-[#e5ecff] transition-colors"
+                      className="inline-flex items-center justify-center rounded-full border border-[#e3e7f2] px-4 py-2 text-xs text-[#5f6b8a] hover:bg-[#f2f4ff] transition-colors"
                     >
-                      Buy now
+                      Contact creator (prototype)
                     </a>
                   )}
-
-                  <Link
-                    href="/marketplace"
-                    className="inline-flex items-center justify-center rounded-full border border-[#c8cee4] px-4 py-2 text-sm text-[#123b8c] hover:bg-[#e5ecff] transition-colors"
-                  >
-                    Browse more products
-                  </Link>
                 </div>
 
                 <p className="text-[11px] text-[#9aa3c3]">
@@ -177,28 +223,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
   );
 }
 
-/** Shown when the URL id can't even be parsed as a number, e.g. /product/abc */
 function NotFoundCard({ message }: { message: string }) {
-  return (
-    <div className="min-h-screen bg-[#f3f6fb] flex items-center justify-center px-4">
-      <div className="w-full max-w-md rounded-3xl bg-white shadow-sm border border-[#e3e7f2] p-6 text-center">
-        <p className="mb-2 text-sm font-medium text-[#071428]">
-          Invalid product link
-        </p>
-        <p className="mb-5 text-xs text-[#5f6b8a]">{message}</p>
-        <Link
-          href="/marketplace"
-          className="inline-flex items-center justify-center rounded-full bg-[#16377A] px-4 py-2 text-sm font-medium text-white hover:bg-[#123b8c] transition-colors"
-        >
-          Back to products
-        </Link>
-      </div>
-    </div>
-  );
-}
-
-/** Shown when the id is valid, but the row is missing / not approved */
-function UnavailableCard({ message }: { message: string }) {
   return (
     <div className="min-h-screen bg-[#f3f6fb] flex items-center justify-center px-4">
       <div className="w-full max-w-md rounded-3xl bg-white shadow-sm border border-[#e3e7f2] p-6 text-center">
@@ -210,7 +235,7 @@ function UnavailableCard({ message }: { message: string }) {
           href="/marketplace"
           className="inline-flex items-center justify-center rounded-full bg-[#16377A] px-4 py-2 text-sm font-medium text-white hover:bg-[#123b8c] transition-colors"
         >
-          Back to products
+          Back to marketplace
         </Link>
       </div>
     </div>

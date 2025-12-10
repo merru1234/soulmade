@@ -1,34 +1,31 @@
 // next.config.ts
-import type { NextConfig } from "next";
 import withPWA from "next-pwa";
+import type { NextConfig } from "next";
 
 const isProd = process.env.NODE_ENV === "production";
 
-const baseConfig: NextConfig = {
+// Safely derive the Supabase hostname from the env URL
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SUPABASE_DOMAIN = SUPABASE_URL ? new URL(SUPABASE_URL).hostname : "";
+
+const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "uncfrlinmfbkngscfnkw.supabase.co",
-        port: "",
-        // your image URL:
-        // /storage/v1/object/public/product-images/public/<file>.png
-        // so we allow the whole bucket:
-        pathname: "/storage/v1/object/public/product-images/public/**",
-      },
-    ],
+    remotePatterns: SUPABASE_DOMAIN
+      ? [
+          {
+            protocol: "https",
+            hostname: SUPABASE_DOMAIN, // 👈 e.g. "uncrflinmfbkngscfnkw.supabase.co"
+            pathname: "/storage/v1/object/public/**",
+          },
+        ]
+      : [],
   },
 };
 
-const withPwa = withPWA({
+export default withPWA({
   dest: "public",
   register: true,
   skipWaiting: true,
-  // 👇 this line keeps PWA only in production
-  disable: !isProd,
-});
-
-const nextConfig: NextConfig = withPwa(baseConfig);
-
-export default nextConfig;
+  disable: !isProd, // PWA only in production
+})(nextConfig);
