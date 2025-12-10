@@ -1,10 +1,8 @@
-// marketplace dummy products v2
-
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
 
 type Product = {
   id: number;
@@ -16,7 +14,7 @@ type Product = {
   image_url: string | null;
 };
 
-// 🔹 Dummy products that use images from /public/dummy-products
+// 🔹 Dummy products using files in /public/dummy-products
 const DUMMY_PRODUCTS: Product[] = [
   {
     id: 1,
@@ -86,6 +84,7 @@ const CATEGORIES = [
 export default function MarketplacePage() {
   const [selectedCategory, setSelectedCategory] = useState("All");
 
+  // 👉 Only dummy products, no Supabase
   const products = DUMMY_PRODUCTS;
 
   const visibleProducts =
@@ -158,7 +157,7 @@ export default function MarketplacePage() {
       <main className="max-w-5xl mx-auto px-4 pb-10 space-y-3">
         {visibleProducts.length === 0 && (
           <p className="text-sm text-[#7d88a8]">
-            No products in this category yet. Check back soon!
+            No products in this category yet. Please check back soon!
           </p>
         )}
 
@@ -175,8 +174,9 @@ export default function MarketplacePage() {
                     src={product.image_url}
                     alt={product.name}
                     fill
-                    sizes="(min-width: 768px) 160px, 100vw"
                     className="object-cover"
+                    sizes="(min-width: 768px) 160px, 100vw"
+                    priority={false}
                   />
                 </div>
               )}
