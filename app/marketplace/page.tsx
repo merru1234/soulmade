@@ -3,83 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 
-type Product = {
-  id: number;
-  name: string;
-  price: number;
-  description: string;
-  seller_contact: string;
-  category: string;
-  image_url: string;
-};
-
-// 🔹 Hard-coded dummy products – using files in /public/dummy-products
-const PRODUCTS: Product[] = [
-  {
-    id: 1,
-    name: "Bright clay earrings",
-    price: 799,
-    description:
-      "Hand-painted clay earrings in bright colours. Lightweight and perfect for daily wear.",
-    seller_contact: "https://wa.me/919999000001",
-    category: "Jewelry & Personal Accessories",
-    image_url: "/dummy-products/clay1.jpg",
-  },
-  {
-    id: 2,
-    name: "Soft-cover doodle notebook",
-    price: 249,
-    description:
-      "A5 notebook with dotted pages and a hand-drawn cover illustration.",
-    seller_contact: "https://wa.me/919999000002",
-    category: "Art & Stationery",
-    image_url: "/dummy-products/notebook.jpg",
-  },
-  {
-    id: 3,
-    name: "Vanilla soy candle",
-    price: 499,
-    description:
-      "Slow-burning soy candle with a soft vanilla scent, poured in a reusable jar.",
-    seller_contact: "https://wa.me/919999000003",
-    category: "Handicrafts & Home Decor",
-    image_url: "/dummy-products/candle.jpg",
-  },
-  {
-    id: 4,
-    name: "Speckled ceramic mug",
-    price: 599,
-    description:
-      "Wheel-thrown ceramic mug with speckled glaze and a comfy handle.",
-    seller_contact: "https://wa.me/919999000004",
-    category: "Essentials & Daily Products",
-    image_url: "/dummy-products/mug.jpg",
-  },
-  {
-    id: 5,
-    name: "Mini embroidered pouch",
-    price: 349,
-    description:
-      "Zip pouch with colourful hand embroidery. Great for coins, keys, or earbuds.",
-    seller_contact: "https://wa.me/919999000005",
-    category: "Textile & Fabric Products",
-    image_url: "/dummy-products/pouch.jpg",
-  },
-];
-
-const CATEGORIES = [
-  "All products",
-  "Handicrafts & Home Decor",
-  "Essentials & Daily Products",
-  "Furnitures and Utility",
-  "Art & Stationery",
-  "Jewelry & Personal Accessories",
-  "Textile & Fabric Products",
-  "Festive & Religious Items",
-  "Toys & Kids’ Products",
-  "Sweets, Snacks & Packaged Foods",
-];
-
 export default function MarketplacePage() {
   return (
     <div className="min-h-screen bg-[#f3f6fb] text-[#071428]">
@@ -117,72 +40,224 @@ export default function MarketplacePage() {
         </div>
       </header>
 
-      {/* CATEGORY CHIPS (visual only, no filtering for now) */}
+      {/* CATEGORY CHIPS – PURELY VISUAL */}
       <section className="max-w-5xl mx-auto px-4 pb-4 flex flex-wrap gap-2">
-        {CATEGORIES.map((label, idx) => (
-          <button
-            // first one (All products) looks active, others normal
-            key={label}
-            type="button"
-            className={
-              "px-4 py-1.5 rounded-full text-xs md:text-sm border transition-colors " +
-              (idx === 0
-                ? "bg-[#123b8c] text-white border-[#123b8c] shadow-sm"
-                : "bg-white text-[#4b5774] border-[#d4d9e6]")
-            }
-            disabled
-          >
-            {label}
-          </button>
-        ))}
+        <button
+          type="button"
+          className="px-4 py-1.5 rounded-full text-xs md:text-sm border bg-[#123b8c] text-white border-[#123b8c] shadow-sm"
+          disabled
+        >
+          All products
+        </button>
+        <button
+          type="button"
+          className="px-4 py-1.5 rounded-full text-xs md:text-sm border bg-white text-[#4b5774] border-[#d4d9e6]"
+          disabled
+        >
+          Handicrafts & Home Decor
+        </button>
+        <button
+          type="button"
+          className="px-4 py-1.5 rounded-full text-xs md:text-sm border bg-white text-[#4b5774] border-[#d4d9e6]"
+          disabled
+        >
+          Essentials & Daily Products
+        </button>
+        <button
+          type="button"
+          className="px-4 py-1.5 rounded-full text-xs md:text-sm border bg-white text-[#4b5774] border-[#d4d9e6]"
+          disabled
+        >
+          Art & Stationery
+        </button>
       </section>
 
-      {/* PRODUCT LIST – ALWAYS SHOW 5 CARDS */}
+      {/* PRODUCT LIST – 5 CARDS, HARD CODED */}
       <main className="max-w-5xl mx-auto px-4 pb-10 space-y-3">
-        {PRODUCTS.map((product) => (
-          <Link
-            key={product.id}
-            href={`/product/${product.id}`}
-            className="block"
-          >
-            <article className="bg-white rounded-2xl shadow-sm border border-[#e3e7f2] hover:shadow-md hover:border-[#c12a63]/30 transition flex flex-col md:flex-row gap-4 p-4">
-              <div className="relative w-full md:w-40 h-40 md:h-32 rounded-xl overflow-hidden bg-[#eef1fb]">
-                <Image
-                  src={product.image_url}
-                  alt={product.name}
-                  fill
-                  className="object-cover"
-                  sizes="(min-width: 768px) 160px, 100vw"
-                />
-              </div>
-
-              <div className="flex-1 flex flex-col justify-between">
-                <div>
-                  <div className="flex items-start justify-between gap-3 mb-1">
-                    <h2 className="text-base md:text-lg font-semibold text-[#071428]">
-                      {product.name}
-                    </h2>
-                    <span className="text-sm md:text-base font-semibold text-[#123b8c]">
-                      ₹{product.price}
-                    </span>
-                  </div>
-
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-[#fde7f1] text-[11px] font-medium text-[#c12a63] mb-1">
-                    {product.category}
+        {/* 1 */}
+        <Link href="/product/1" className="block">
+          <article className="bg-white rounded-2xl shadow-sm border border-[#e3e7f2] hover:shadow-md hover:border-[#c12a63]/30 transition flex flex-col md:flex-row gap-4 p-4">
+            <div className="relative w-full md:w-40 h-40 md:h-32 rounded-xl overflow-hidden bg-[#eef1fb]">
+              <Image
+                src="/dummy-products/clay1.jpg"
+                alt="Bright clay earrings"
+                fill
+                className="object-cover"
+                sizes="(min-width: 768px) 160px, 100vw"
+              />
+            </div>
+            <div className="flex-1 flex flex-col justify-between">
+              <div>
+                <div className="flex items-start justify-between gap-3 mb-1">
+                  <h2 className="text-base md:text-lg font-semibold text-[#071428]">
+                    Bright clay earrings
+                  </h2>
+                  <span className="text-sm md:text-base font-semibold text-[#123b8c]">
+                    ₹799
                   </span>
-
-                  <p className="text-sm text-[#5f6b8a]">
-                    {product.description}
-                  </p>
                 </div>
-
-                <p className="mt-2 text-xs text-[#9aa3c3]">
-                  Tap to read the creator&apos;s story →
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-[#fde7f1] text-[11px] font-medium text-[#c12a63] mb-1">
+                  Jewelry & Personal Accessories
+                </span>
+                <p className="text-sm text-[#5f6b8a]">
+                  Hand-painted clay earrings in bright colours. Lightweight and
+                  perfect for daily wear.
                 </p>
               </div>
-            </article>
-          </Link>
-        ))}
+              <p className="mt-2 text-xs text-[#9aa3c3]">
+                Tap to read the creator&apos;s story →
+              </p>
+            </div>
+          </article>
+        </Link>
+
+        {/* 2 */}
+        <Link href="/product/2" className="block">
+          <article className="bg-white rounded-2xl shadow-sm border border-[#e3e7f2] hover:shadow-md hover:border-[#c12a63]/30 transition flex flex-col md:flex-row gap-4 p-4">
+            <div className="relative w-full md:w-40 h-40 md:h-32 rounded-xl overflow-hidden bg-[#eef1fb]">
+              <Image
+                src="/dummy-products/notebook.jpg"
+                alt="Soft-cover doodle notebook"
+                fill
+                className="object-cover"
+                sizes="(min-width: 768px) 160px, 100vw"
+              />
+            </div>
+            <div className="flex-1 flex flex-col justify-between">
+              <div>
+                <div className="flex items-start justify-between gap-3 mb-1">
+                  <h2 className="text-base md:text-lg font-semibold text-[#071428]">
+                    Soft-cover doodle notebook
+                  </h2>
+                  <span className="text-sm md:text-base font-semibold text-[#123b8c]">
+                    ₹249
+                  </span>
+                </div>
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-[#fde7f1] text-[11px] font-medium text-[#c12a63] mb-1">
+                  Art & Stationery
+                </span>
+                <p className="text-sm text-[#5f6b8a]">
+                  A5 notebook with dotted pages and a hand-drawn cover
+                  illustration.
+                </p>
+              </div>
+              <p className="mt-2 text-xs text-[#9aa3c3]">
+                Tap to read the creator&apos;s story →
+              </p>
+            </div>
+          </article>
+        </Link>
+
+        {/* 3 */}
+        <Link href="/product/3" className="block">
+          <article className="bg-white rounded-2xl shadow-sm border border-[#e3e7f2] hover:shadow-md hover:border-[#c12a63]/30 transition flex flex-col md:flex-row gap-4 p-4">
+            <div className="relative w-full md:w-40 h-40 md:h-32 rounded-xl overflow-hidden bg-[#eef1fb]">
+              <Image
+                src="/dummy-products/candle.jpg"
+                alt="Vanilla soy candle"
+                fill
+                className="object-cover"
+                sizes="(min-width: 768px) 160px, 100vw"
+              />
+            </div>
+            <div className="flex-1 flex flex-col justify-between">
+              <div>
+                <div className="flex items-start justify-between gap-3 mb-1">
+                  <h2 className="text-base md:text-lg font-semibold text-[#071428]">
+                    Vanilla soy candle
+                  </h2>
+                  <span className="text-sm md:text-base font-semibold text-[#123b8c]">
+                    ₹499
+                  </span>
+                </div>
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-[#fde7f1] text-[11px] font-medium text-[#c12a63] mb-1">
+                  Handicrafts & Home Decor
+                </span>
+                <p className="text-sm text-[#5f6b8a]">
+                  Slow-burning soy candle with a soft vanilla scent, poured in
+                  a reusable jar.
+                </p>
+              </div>
+              <p className="mt-2 text-xs text-[#9aa3c3]">
+                Tap to read the creator&apos;s story →
+              </p>
+            </div>
+          </article>
+        </Link>
+
+        {/* 4 */}
+        <Link href="/product/4" className="block">
+          <article className="bg-white rounded-2xl shadow-sm border border-[#e3e7f2] hover:shadow-md hover:border-[#c12a63]/30 transition flex flex-col md:flex-row gap-4 p-4">
+            <div className="relative w-full md:w-40 h-40 md:h-32 rounded-xl overflow-hidden bg-[#eef1fb]">
+              <Image
+                src="/dummy-products/mug.jpg"
+                alt="Speckled ceramic mug"
+                fill
+                className="object-cover"
+                sizes="(min-width: 768px) 160px, 100vw"
+              />
+            </div>
+            <div className="flex-1 flex flex-col justify-between">
+              <div>
+                <div className="flex items-start justify-between gap-3 mb-1">
+                  <h2 className="text-base md:text-lg font-semibold text-[#071428]">
+                    Speckled ceramic mug
+                  </h2>
+                  <span className="text-sm md:text-base font-semibold text-[#123b8c]">
+                    ₹599
+                  </span>
+                </div>
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-[#fde7f1] text-[11px] font-medium text-[#c12a63] mb-1">
+                  Essentials & Daily Products
+                </span>
+                <p className="text-sm text-[#5f6b8a]">
+                  Wheel-thrown ceramic mug with speckled glaze and a comfy
+                  handle.
+                </p>
+              </div>
+              <p className="mt-2 text-xs text-[#9aa3c3]">
+                Tap to read the creator&apos;s story →
+              </p>
+            </div>
+          </article>
+        </Link>
+
+        {/* 5 */}
+        <Link href="/product/5" className="block">
+          <article className="bg-white rounded-2xl shadow-sm border border-[#e3e7f2] hover:shadow-md hover:border-[#c12a63]/30 transition flex flex-col md:flex-row gap-4 p-4">
+            <div className="relative w-full md:w-40 h-40 md:h-32 rounded-xl overflow-hidden bg-[#eef1fb]">
+              <Image
+                src="/dummy-products/pouch.jpg"
+                alt="Mini embroidered pouch"
+                fill
+                className="object-cover"
+                sizes="(min-width: 768px) 160px, 100vw"
+              />
+            </div>
+            <div className="flex-1 flex flex-col justify-between">
+              <div>
+                <div className="flex items-start justify-between gap-3 mb-1">
+                  <h2 className="text-base md:text-lg font-semibold text-[#071428]">
+                    Mini embroidered pouch
+                  </h2>
+                  <span className="text-sm md:text-base font-semibold text-[#123b8c]">
+                    ₹349
+                  </span>
+                </div>
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-[#fde7f1] text-[11px] font-medium text-[#c12a63] mb-1">
+                  Textile & Fabric Products
+                </span>
+                <p className="text-sm text-[#5f6b8a]">
+                  Zip pouch with colourful hand embroidery. Great for coins,
+                  keys, or earbuds.
+                </p>
+              </div>
+              <p className="mt-2 text-xs text-[#9aa3c3]">
+                Tap to read the creator&apos;s story →
+              </p>
+            </div>
+          </article>
+        </Link>
       </main>
     </div>
   );
