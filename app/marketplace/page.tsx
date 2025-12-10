@@ -1,22 +1,20 @@
-// app/marketplace/page.tsx
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import Link from "next/link";
 
 type Product = {
   id: number;
   name: string;
   price: number;
-  description: string | null;
-  seller_contact: string | null;
-  category: string | null;
-  image_url: string | null;
+  description: string;
+  seller_contact: string;
+  category: string;
+  image_url: string;
 };
 
-// 🔹 Dummy products using files from /public/dummy-products
-const DUMMY_PRODUCTS: Product[] = [
+// 🔹 Hard-coded dummy products – using files in /public/dummy-products
+const PRODUCTS: Product[] = [
   {
     id: 1,
     name: "Bright clay earrings",
@@ -69,8 +67,8 @@ const DUMMY_PRODUCTS: Product[] = [
   },
 ];
 
-// 🔹 Build category chips from the dummy products themselves
-const BASE_CATEGORIES = [
+const CATEGORIES = [
+  "All products",
   "Handicrafts & Home Decor",
   "Essentials & Daily Products",
   "Furnitures and Utility",
@@ -80,23 +78,9 @@ const BASE_CATEGORIES = [
   "Festive & Religious Items",
   "Toys & Kids’ Products",
   "Sweets, Snacks & Packaged Foods",
-] as const;
-
-const CATEGORIES = ["All", ...BASE_CATEGORIES];
+];
 
 export default function MarketplacePage() {
-  const [selectedCategory, setSelectedCategory] = useState<string>("All");
-
-  // 🔹 Use DUMMY_PRODUCTS directly – no extra products variable
-  const visibleProducts =
-    selectedCategory === "All"
-      ? DUMMY_PRODUCTS
-      : DUMMY_PRODUCTS.filter(
-          (p) =>
-            p.category &&
-            p.category.toLowerCase() === selectedCategory.toLowerCase()
-        );
-
   return (
     <div className="min-h-screen bg-[#f3f6fb] text-[#071428]">
       {/* HEADER */}
@@ -133,53 +117,44 @@ export default function MarketplacePage() {
         </div>
       </header>
 
-      {/* CATEGORY CHIPS */}
+      {/* CATEGORY CHIPS (visual only, no filtering for now) */}
       <section className="max-w-5xl mx-auto px-4 pb-4 flex flex-wrap gap-2">
-        {CATEGORIES.map((cat) => {
-          const isActive = selectedCategory === cat;
-          return (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={
-                "px-4 py-1.5 rounded-full text-xs md:text-sm border transition-colors " +
-                (isActive
-                  ? "bg-[#123b8c] text-white border-[#123b8c] shadow-sm"
-                  : "bg-white text-[#4b5774] border-[#d4d9e6] hover:border-[#123b8c]/50")
-              }
-            >
-              {cat === "All" ? "All products" : cat}
-            </button>
-          );
-        })}
+        {CATEGORIES.map((label, idx) => (
+          <button
+            // first one (All products) looks active, others normal
+            key={label}
+            type="button"
+            className={
+              "px-4 py-1.5 rounded-full text-xs md:text-sm border transition-colors " +
+              (idx === 0
+                ? "bg-[#123b8c] text-white border-[#123b8c] shadow-sm"
+                : "bg-white text-[#4b5774] border-[#d4d9e6]")
+            }
+            disabled
+          >
+            {label}
+          </button>
+        ))}
       </section>
 
-      {/* PRODUCT LIST */}
+      {/* PRODUCT LIST – ALWAYS SHOW 5 CARDS */}
       <main className="max-w-5xl mx-auto px-4 pb-10 space-y-3">
-        {visibleProducts.length === 0 && (
-          <p className="text-sm text-[#7d88a8]">
-            No products in this category yet. Check back soon!
-          </p>
-        )}
-
-        {visibleProducts.map((product) => (
+        {PRODUCTS.map((product) => (
           <Link
             key={product.id}
             href={`/product/${product.id}`}
             className="block"
           >
             <article className="bg-white rounded-2xl shadow-sm border border-[#e3e7f2] hover:shadow-md hover:border-[#c12a63]/30 transition flex flex-col md:flex-row gap-4 p-4">
-              {product.image_url && (
-                <div className="relative w-full md:w-40 h-40 md:h-32 rounded-xl overflow-hidden bg-[#eef1fb]">
-                  <Image
-                    src={product.image_url}
-                    alt={product.name}
-                    fill
-                    className="object-cover"
-                    sizes="(min-width: 768px) 160px, 100vw"
-                  />
-                </div>
-              )}
+              <div className="relative w-full md:w-40 h-40 md:h-32 rounded-xl overflow-hidden bg-[#eef1fb]">
+                <Image
+                  src={product.image_url}
+                  alt={product.name}
+                  fill
+                  className="object-cover"
+                  sizes="(min-width: 768px) 160px, 100vw"
+                />
+              </div>
 
               <div className="flex-1 flex flex-col justify-between">
                 <div>
@@ -192,13 +167,11 @@ export default function MarketplacePage() {
                     </span>
                   </div>
 
-                  {product.category && (
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-[#fde7f1] text-[11px] font-medium text-[#c12a63] mb-1">
-                      {product.category}
-                    </span>
-                  )}
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-[#fde7f1] text-[11px] font-medium text-[#c12a63] mb-1">
+                    {product.category}
+                  </span>
 
-                  <p className="text-sm text-[#5f6b8a] line-clamp-2">
+                  <p className="text-sm text-[#5f6b8a]">
                     {product.description}
                   </p>
                 </div>
