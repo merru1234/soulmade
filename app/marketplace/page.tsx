@@ -1,8 +1,9 @@
+// app/marketplace/page.tsx
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
 
 type Product = {
   id: number;
@@ -14,7 +15,7 @@ type Product = {
   image_url: string | null;
 };
 
-// 🔹 Dummy products using files in /public/dummy-products
+// 🔹 Dummy products using files from /public/dummy-products
 const DUMMY_PRODUCTS: Product[] = [
   {
     id: 1,
@@ -68,8 +69,8 @@ const DUMMY_PRODUCTS: Product[] = [
   },
 ];
 
-const CATEGORIES = [
-  "All",
+// 🔹 Build category chips from the dummy products themselves
+const BASE_CATEGORIES = [
   "Handicrafts & Home Decor",
   "Essentials & Daily Products",
   "Furnitures and Utility",
@@ -79,18 +80,18 @@ const CATEGORIES = [
   "Festive & Religious Items",
   "Toys & Kids’ Products",
   "Sweets, Snacks & Packaged Foods",
-];
+] as const;
+
+const CATEGORIES = ["All", ...BASE_CATEGORIES];
 
 export default function MarketplacePage() {
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
-  // 👉 Only dummy products, no Supabase
-  const products = DUMMY_PRODUCTS;
-
+  // 🔹 Use DUMMY_PRODUCTS directly – no extra products variable
   const visibleProducts =
     selectedCategory === "All"
-      ? products
-      : products.filter(
+      ? DUMMY_PRODUCTS
+      : DUMMY_PRODUCTS.filter(
           (p) =>
             p.category &&
             p.category.toLowerCase() === selectedCategory.toLowerCase()
@@ -157,7 +158,7 @@ export default function MarketplacePage() {
       <main className="max-w-5xl mx-auto px-4 pb-10 space-y-3">
         {visibleProducts.length === 0 && (
           <p className="text-sm text-[#7d88a8]">
-            No products in this category yet. Please check back soon!
+            No products in this category yet. Check back soon!
           </p>
         )}
 
@@ -176,7 +177,6 @@ export default function MarketplacePage() {
                     fill
                     className="object-cover"
                     sizes="(min-width: 768px) 160px, 100vw"
-                    priority={false}
                   />
                 </div>
               )}
