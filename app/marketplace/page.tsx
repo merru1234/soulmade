@@ -1,9 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import Image from "next/image";
+import { useState } from "react";
 
 type Product = {
   id: number;
@@ -13,10 +12,61 @@ type Product = {
   seller_contact: string | null;
   category: string | null;
   image_url: string | null;
-  status?: string | null;
 };
 
-const fallbackProducts: Product[] = [];
+// 🔹 5 dummy products – images served from /public
+const DUMMY_PRODUCTS: Product[] = [
+  {
+    id: 1,
+    name: "Bright clay earrings",
+    price: 799,
+    description:
+      "Hand-painted clay earrings in bright colours. Lightweight and perfect for daily wear.",
+    seller_contact: "https://wa.me/919999000001",
+    category: "Jewelry & Personal Accessories",
+    image_url: "/dummy-products/clay1.jpg",
+  },
+  {
+    id: 2,
+    name: "Soft-cover doodle notebook",
+    price: 249,
+    description:
+      "A5 notebook with dotted pages and a hand-drawn cover illustration.",
+    seller_contact: "https://wa.me/919999000002",
+    category: "Art & Stationery",
+    image_url: "/dummy-products/notebook.jpg",
+  },
+  {
+    id: 3,
+    name: "Vanilla soy candle",
+    price: 499,
+    description:
+      "Slow-burning soy candle with a soft vanilla scent, poured in a reusable jar.",
+    seller_contact: "https://wa.me/919999000003",
+    category: "Handicrafts & Home Decor",
+    image_url: "/dummy-products/candle.jpg",
+  },
+  {
+    id: 4,
+    name: "Speckled ceramic mug",
+    price: 599,
+    description:
+      "Wheel-thrown ceramic mug with speckled glaze and a comfy handle.",
+    seller_contact: "https://wa.me/919999000004",
+    category: "Essentials & Daily Products",
+    image_url: "/dummy-products/mug.jpg",
+  },
+  {
+    id: 5,
+    name: "Mini embroidered pouch",
+    price: 349,
+    description:
+      "Zip pouch with colourful hand embroidery. Great for coins, keys, or earbuds.",
+    seller_contact: "https://wa.me/919999000005",
+    category: "Textile & Fabric Products",
+    image_url: "/dummy-products/pouch.jpg",
+  },
+];
 
 const CATEGORIES = [
   "All",
@@ -32,37 +82,9 @@ const CATEGORIES = [
 ];
 
 export default function MarketplacePage() {
-  const [products, setProducts] = useState<Product[]>(fallbackProducts);
-  const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  useEffect(() => {
-    async function loadProducts() {
-      try {
-        const { data, error } = await supabase
-          .from("products")
-          .select("*")
-          .eq("status", "approved")
-          .order("created_at", { ascending: false });
-
-        if (error) {
-          console.error("Error loading products (Supabase):", error.message);
-          setProducts(fallbackProducts);
-        } else if (data && data.length > 0) {
-          setProducts(data as Product[]);
-        } else {
-          setProducts(fallbackProducts);
-        }
-      } catch (e) {
-        console.error("Error loading products (fetch failed):", e);
-        setProducts(fallbackProducts);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadProducts();
-  }, []);
+  const products = DUMMY_PRODUCTS;
 
   const visibleProducts =
     selectedCategory === "All"
@@ -77,7 +99,7 @@ export default function MarketplacePage() {
     <div className="min-h-screen bg-[#f3f6fb] text-[#071428]">
       {/* HEADER */}
       <header className="max-w-5xl mx-auto px-4 pt-6 pb-4 flex items-center justify-between gap-4">
-        <Link href="/" className="flex items-center gap-3">
+        <div className="flex items-center gap-3">
           <div className="relative h-11 w-11">
             <Image
               src="/SoulMade.png"
@@ -86,10 +108,12 @@ export default function MarketplacePage() {
               className="object-contain drop-shadow-sm"
             />
           </div>
-          <h1 className="text-2xl font-semibold tracking-tight text-[#16377A]">
-            SoulMade
-          </h1>
-        </Link>
+          <Link href="/" className="flex flex-col">
+            <h1 className="text-2xl font-semibold tracking-tight text-[#16377A]">
+              SoulMade
+            </h1>
+          </Link>
+        </div>
 
         <div className="flex gap-2">
           <Link
@@ -130,11 +154,7 @@ export default function MarketplacePage() {
 
       {/* PRODUCT LIST */}
       <main className="max-w-5xl mx-auto px-4 pb-10 space-y-3">
-        {loading && (
-          <p className="text-sm text-[#7d88a8]">Loading products…</p>
-        )}
-
-        {!loading && visibleProducts.length === 0 && (
+        {visibleProducts.length === 0 && (
           <p className="text-sm text-[#7d88a8]">
             No products in this category yet. Check back soon!
           </p>
